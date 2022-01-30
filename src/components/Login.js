@@ -1,6 +1,6 @@
 import React from "react";
 
-function Login ({ authorization }) {
+function Login ({ authorize }) {
     const [valueEmail, setValueEmail] = React.useState("");
     const [valuePassword, setValuePassword] = React.useState("");
 
@@ -14,7 +14,7 @@ function Login ({ authorization }) {
         e.preventDefault();
         const email = valueEmail;
         const password = valuePassword;
-        authorization({ password, email });
+        authorize({ password, email });
     }
 
     return (

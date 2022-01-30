@@ -47,7 +47,8 @@ function App() {
         })
         .catch((err) => {
             console.log(err);
-        });       
+        });
+        tokenCheck();       
     }, []);
 
     const handleCardLike = (card) => {
@@ -142,6 +143,22 @@ function App() {
         setIsButtonText('')
     }
 
+    const tokenCheck = () => {
+        const jwt = localStorage.getItem("jwt")
+        if (localStorage.getItem("jwt")) {
+        auth.checkToken(jwt)
+            .then ((data) => {
+                if (data) {
+                    setLoggedIn(true);
+                    history.push("/");
+                    setEmail(data.data['email']);
+                } 
+            })
+            .catch((err) => {
+                console.log(err);});
+        }
+    }
+
     const handleSignOut = () => {
         setLoggedIn(false);
         localStorage.removeItem("jwt");
@@ -178,17 +195,10 @@ function App() {
         auth
             .authorize({ email, password })
             .then((data) => {
-            if (!data) {
-                return;
-            }
-            setLoggedIn(true);
-            setEmail(email)
-            handleTooltipInfo({
-                imgPath: successIcon,
-                text: "Вы успешно авторизованы",
-            });
-            history.push("/");
-            handleToolltipInfoOpen();
+                setLoggedIn(true);
+                setEmail(email)
+                history.push("/");
+                localStorage.setItem("jwt", data.token);   
             })
             .catch((err) => {
             handleTooltipInfo({
@@ -196,7 +206,6 @@ function App() {
                 text: "Что-то пошло не так",
             });
             handleToolltipInfoOpen();
-    
             console.log(err);
             });
     }
@@ -217,13 +226,13 @@ function App() {
         />
         <Switch>
         <Route path="/sign-in">
-            <Login authorization={authorization} />
+            <Login authorize={authorization} />
         </Route>
         <Route path="/sign-up">
-            <Register registration={registration} />
+            <Register registrate={registration} />
         </Route>
             <ProtectedRoute
-            exact path="/Main"
+            exact path="/"
             component = {Main}
             onEditAvatar={handleEditAvatarClick}
             onEditProfile={handleEditProfileClick}
@@ -235,7 +244,7 @@ function App() {
             loggedIn={loggedIn}
             />
         <Route path="/">
-            {loggedIn ? <Redirect to="/main" /> : <Redirect to="/sign-in" />}
+            {loggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
         </Route>    
         </Switch>
         {loggedIn ? <Footer /> : ''}

@@ -27,16 +27,10 @@ export const authorize = ({email, password}) => {
             'content-type': 'application/json'
         },
         body: JSON.stringify({email, password})
-    }).then(checkResponse) 
-    .then((data) => {
-        if(data.token) {
-            localStorage.setItem('jwt', data.token)
-            return data.token;
-        }
-    })
+    }).then(res => checkResponse(res)) 
 }
 
-export const getContent = (token) => {
+export const checkToken = (token) => {
     return fetch(`${BASE_URL}/users/me`, {
         method: 'GET',
         headers: {
@@ -45,5 +39,4 @@ export const getContent = (token) => {
         }
     })
     .then(checkResponse)
-    .then((data) => data)
 }
