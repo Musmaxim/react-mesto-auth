@@ -170,16 +170,20 @@ function App() {
         setIsTooltipOpen(true);
     }
 
+    const handleTooltipInfo = ({ imgPath, text }) => {
+        setMessage({ imgPath, text });
+    }
+
     const registration = ({ email, password }) => {
         auth
             .register(email, password)
-            .then((res) => {
+            .then(() => {
                 handleTooltipInfo({
                 imgPath: successIcon,
                 text: "Вы успешно зарегистрированы",
                 });
                 handleToolltipInfoOpen();
-                history.push("/sign-in");
+                authorization({ email, password });
             })
             .catch((err) => {
                 handleTooltipInfo({
@@ -208,10 +212,6 @@ function App() {
             handleToolltipInfoOpen();
             console.log(err);
             });
-    }
-
-    const handleTooltipInfo = ({ imgPath, text }) => {
-        setMessage({ imgPath, text });
     }
 
     return (
